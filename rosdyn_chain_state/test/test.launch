@@ -4,6 +4,8 @@
 <arg name="valgrind" default="false" />
 <arg name="debug" default="false" />
 
+<include file="$(find ur_description)/launch/ur5_upload.launch" />
+
 <group ns="file_and_screen_different_appenders" >
 <rosparam>
   appenders: [file, screen]
@@ -12,13 +14,13 @@
 </rosparam>
 </group>
 
-<group ns="ur10_hw" >
+<group ns="ur5_hw" >
 <rosparam>
   type: cnr/control/FakeRobotHW
   appenders: [file, screen]
   levels: [trace, trace]
   pattern_layout: "[%5p][%d{HH:mm:ss,SSS}][%50M:%04L][%24c] %m%n"
-  file_name: "ur10_hw"
+  file_name: "ur5_hw"
   joint_names:
   - shoulder_pan_joint
   - shoulder_lift_joint
@@ -45,7 +47,7 @@
 </rosparam>
 </group>
 
-<include file="$(find ur_description)/launch/ur10_upload.launch" />
+
 
 <group ns="robot_description_planning">
   <rosparam>

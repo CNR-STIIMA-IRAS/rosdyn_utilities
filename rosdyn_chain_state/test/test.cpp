@@ -106,6 +106,7 @@ rosdyn::ChainPtr kin1  ;
 rosdyn::ChainPtr kin3  ;
 rosdyn::ChainPtr kin6  ;
 
+using ChainStateX  = rosdyn::ChainStateX;
 using ChainStateX20= rosdyn::ChainStateN<-1, 20>;
 using ChainStateXX = rosdyn::ChainStateN<-1>;
 using ChainState1  = rosdyn::ChainStateN<1>;
@@ -119,6 +120,7 @@ using ChainStatePublisher1  = rosdyn::ChainStatePublisherN<1>;
 using ChainStatePublisher3  = rosdyn::ChainStatePublisherN<3>;
 using ChainStatePublisher6  = rosdyn::ChainStatePublisherN<6>;
 
+std::shared_ptr<ChainStateXX>  chainX;
 std::shared_ptr<ChainStateX20> chainX20;
 std::shared_ptr<ChainStateXX>  chainXX;
 std::shared_ptr<ChainState1>   chain1;
@@ -138,12 +140,11 @@ TEST(TestSuite, chainInit)
   ASSERT_NO_THROW(kin6.reset(new rosdyn::Chain()););
 
   urdf::Model model;
-  model.initFile("/home/feymann/ctrl_ws/src/nicola_simulation_stuff/ur/ur_description/urdf/ur5.urdf");
+  model.initParam("robot_description");
 
   Eigen::Vector3d grav;
   grav << 0, 0, -9.806;
 
-  rosdyn::Chain chain;
   std::string error;
   rosdyn::LinkPtr root_link;
   NEW_HEAP(root_link, rosdyn::Link());
@@ -166,6 +167,7 @@ TEST(TestSuite, emptyConstructor)
 {
   ASSERT_TRUE(no_throw([]{chainX20.reset(new ChainStateX20());}));
   ASSERT_TRUE(no_throw([]{chainXX .reset(new ChainStateXX ());}));
+  ASSERT_TRUE(no_throw([]{chainX  .reset(new ChainStateX  ());}));
   ASSERT_TRUE(no_throw([]{chain1  .reset(new ChainState1  ());}));
   ASSERT_TRUE(no_throw([]{chain3  .reset(new ChainState3  ());}));
   ASSERT_TRUE(no_throw([]{chain6  .reset(new ChainState6  ());}));
@@ -176,8 +178,11 @@ TEST(TestSuite, init)
   EXPECT_TRUE(chainX20->init(kin1) );
   EXPECT_TRUE(chainX20->init(kin6) );
 
-  EXPECT_TRUE( chainXX->init(kin3) );
+  EXPECT_TRUE(chainXX->init(kin3) );
   EXPECT_TRUE(chainXX->init(kin6) );
+
+  EXPECT_TRUE(chainX->init(kin3) );
+  EXPECT_TRUE(chainX->init(kin6) );
 
   EXPECT_TRUE(chain1->init(kin1) );
   EXPECT_FALSE(chain1->init(kin6) );
@@ -351,6 +356,26 @@ TEST(TestSuite, handlesX20)
 
   d[3] = 100;
   std::cout << "q: " << eigen_utils::to_string( chainX20->q() ) << std::endl;
+}
+
+
+TEST(TestSuite, jacTest)
+{
+
+  Eigen::Matrix<double,6,1> tmp;
+  tmp << -1.0761402289019983, -2.00346547762026, -1.6660807768451136, -0.1624382177935999, 0.8131169676780701, 0.1402850896120071;
+  auto jac_rosdyn = kin6->getJacobian(tmp);
+
+
+  chainX->q() = tmp;
+  std::cout << "q: " << eigen_utils::to_string( chainX->q() ) << std::endl;
+
+  chainX->updateTransformations(kin6, rosdyn::ChainState::SECOND_ORDER|rosdyn::ChainState::FFWD_STATIC);
+
+  std::cout << "rosdyn jacobian:\n" << eigen_utils::to_string( jac_rosdyn, false ) << std::endl;
+  std::cout << "chain state jacobian:\n" << eigen_utils::to_string( chainX->jacobian(), false ) << std::endl;
+
+  ASSERT_TRUE( (jac_rosdyn-chainX->jacobian()).cwiseAbs().maxCoeff()<1e-4);
 }
 
 

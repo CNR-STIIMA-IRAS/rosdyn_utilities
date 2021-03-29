@@ -169,7 +169,7 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(ChainPtr kin,
   }
   if(ffwd_kin_type & FIRST_ORDER)
   {
-    jacobian_ = kin->getJacobian(_qd);
+    jacobian_ = kin->getJacobian(_q);
     twist_    = kin->getTwistTool(_q,_qd);
   }
   if(ffwd_kin_type & SECOND_ORDER)
@@ -206,7 +206,7 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(ChainPtr kin,
   }
   if(ffwd_kin_type & FIRST_ORDER)
   {
-    jacobian_ = kin->getJacobian(qd_.value());
+    jacobian_ = kin->getJacobian(q_.value());
     twist_    = kin->getTwistTool(q_.value(),qd_.value());
   }
   if(ffwd_kin_type & SECOND_ORDER)
@@ -245,7 +245,7 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(Chain& kin, i
   }
   if(ffwd_kin_type & FIRST_ORDER)
   {
-    jacobian_ = kin.getJacobian(_qd);
+    jacobian_ = kin.getJacobian(_q);
     twist_    = kin.getTwistTool(_q,_qd);
   }
   if(ffwd_kin_type & SECOND_ORDER)
@@ -277,7 +277,7 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(Chain& kin, i
   }
   if(ffwd_kin_type & FIRST_ORDER)
   {
-    jacobian_ = kin.getJacobian(qd_.value());
+    jacobian_ = kin.getJacobian(q_.value());
     twist_    = kin.getTwistTool(q_.value(),qd_.value());
   }
   if(ffwd_kin_type & SECOND_ORDER)

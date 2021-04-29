@@ -141,6 +141,7 @@ inline void ChainStateN<N,MN>::copy(const ChainStateN<N,MN>& cpy, CopyType what)
   }
   if(what ==this->ONLY_CART || what == this->FULL_STATE)
   {
+    this->Tbl_      = cpy.Tbl_;
     this->Tbt_      = cpy.Tbt_;
     this->twist_    = cpy.twist_;
     this->twistd_   = cpy.twistd_;
@@ -165,16 +166,17 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(ChainPtr kin,
 
   if(ffwd_kin_type & ZERO_ORDER)
   {
+    Tbl_ = kin->getTransformations(_q);
     Tbt_ = kin->getTransformation(_q);
   }
   if(ffwd_kin_type & FIRST_ORDER)
   {
     jacobian_ = kin->getJacobian(_q);
-    twist_    = kin->getTwistTool(_q,_qd);
+    twist_   = kin->getTwist(_q,_qd);
   }
   if(ffwd_kin_type & SECOND_ORDER)
   {
-    twistd_   = kin->getDTwistTool(_q,_qd,_qdd);
+    twistd_   = kin->getDTwist(_q,_qd,_qdd);
   }
 
   if(ffwd_kin_type & FFWD_STATIC)
@@ -202,16 +204,17 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(ChainPtr kin,
 
   if(ffwd_kin_type & ZERO_ORDER)
   {
+    Tbl_ = kin->getTransformations(q_.value());
     Tbt_ = kin->getTransformation(q_.value());
   }
   if(ffwd_kin_type & FIRST_ORDER)
   {
     jacobian_ = kin->getJacobian(q_.value());
-    twist_    = kin->getTwistTool(q_.value(),qd_.value());
+    twist_   = kin->getTwist(q_.value(),qd_.value());
   }
   if(ffwd_kin_type & SECOND_ORDER)
   {
-    twistd_   = kin->getDTwistTool(q_.value(),qd_.value(),qdd_.value());
+    twistd_   = kin->getDTwist(q_.value(),qd_.value(),qdd_.value());
   }
 
   if(ffwd_kin_type & FFWD_STATIC)
@@ -241,16 +244,17 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(Chain& kin, i
 
   if(ffwd_kin_type & ZERO_ORDER)
   {
+    Tbl_ = kin.getTransformations(_q);
     Tbt_ = kin.getTransformation(_q);
   }
   if(ffwd_kin_type & FIRST_ORDER)
   {
     jacobian_ = kin.getJacobian(_q);
-    twist_    = kin.getTwistTool(_q,_qd);
+    twist_   = kin.getTwist(_q,_qd);
   }
   if(ffwd_kin_type & SECOND_ORDER)
   {
-    twistd_   = kin.getDTwistTool(_q,_qd,_qdd);
+    twistd_   = kin.getDTwist(_q,_qd,_qdd);
   }
 
   if(ffwd_kin_type & FFWD_STATIC)
@@ -273,16 +277,17 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(Chain& kin, i
 {
   if(ffwd_kin_type & ZERO_ORDER)
   {
+    Tbl_ = kin.getTransformations(q_.value());
     Tbt_ = kin.getTransformation(q_.value());
   }
   if(ffwd_kin_type & FIRST_ORDER)
   {
     jacobian_ = kin.getJacobian(q_.value());
-    twist_    = kin.getTwistTool(q_.value(),qd_.value());
+    twist_    = kin.getTwist(q_.value(),qd_.value());
   }
   if(ffwd_kin_type & SECOND_ORDER)
   {
-    twistd_   = kin.getDTwistTool(q_.value(),qd_.value(),qdd_.value());
+    twistd_   = kin.getDTwist(q_.value(),qd_.value(),qdd_.value());
   }
 
   if(ffwd_kin_type & FFWD_STATIC)
@@ -369,8 +374,8 @@ inline std::string to_string(const rosdyn::ChainStateN<N,MaxN>& chain)
   ret += "qdd:   " + eu::to_string(chain.qdd())                      + "\n";
   ret += "eff:   " + eu::to_string(chain.effort())                   + "\n";
   ret += "tool:  " + eu::to_string(chain.toolPose().matrix(),false)  + "\n";
-  ret += "twist: " + eu::to_string(chain.twist())                    + "\n";
-  ret += "twistd:" + eu::to_string(chain.twistd())                   + "\n";
+  ret += "twist: " + eu::to_string(chain.toolTwist())                + "\n";
+  ret += "twistd:" + eu::to_string(chain.toolTwistd())               + "\n";
   return ret;
 }
 

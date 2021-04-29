@@ -42,11 +42,11 @@ public:
   using JacobianMatrix = Eigen::Matrix<double,6,N, Eigen::ColMajor,6, MaxN>;
 
   // GETTER
-  const Value&  q() const { return q_.value();  }
-  const Value&  qd() const { return qd_.value(); }
-  const Value&  qdd() const { return qdd_.value();}
-  const Value&  effort() const { return effort_.value(); }
-  const Value&  external_effort() const { return external_effort_.value(); }
+  const Value& q() const { return q_.value();  }
+  const Value& qd() const { return qd_.value(); }
+  const Value& qdd() const { return qdd_.value();}
+  const Value& effort() const { return effort_.value(); }
+  const Value& external_effort() const { return external_effort_.value(); }
 
   double q(const int& iAx) const {CHECK_iAx(iAx); return q_.value(iAx); }
   double qd(const int& iAx) const {CHECK_iAx(iAx); return qd_.value(iAx); }
@@ -60,11 +60,15 @@ public:
   double effort(const std::string& name) const {DEF_iAX(name); return effort(iAx); }
   double external_effort(const std::string& name) const {DEF_iAX(name); return external_effort(iAx); }
 
+  const rosdyn::VectorOfAffine3d& linkPose( ) const { return Tbl_; }
+  const rosdyn::VectorOfVector6d& linkTwist( ) const { return twist_; }
+  const rosdyn::VectorOfVector6d& linkTwistd( ) const { return twistd_; }
+  
   const Eigen::Affine3d& toolPose( ) const { return Tbt_;   }
-  const Eigen::Vector6d& twist( ) const { return twist_; }
-  const Eigen::Vector6d& twistd( ) const { return twistd_;}
-  const Eigen::Vector6d& wrench( ) const { return wrench_.value();}
-  const JacobianMatrix&  jacobian( ) const { return jacobian_; }
+  const Eigen::Vector6d& toolTwist( ) const { return twist_.back(); }
+  const Eigen::Vector6d& toolTwistd( ) const { return twistd_.back();}
+  const Eigen::Vector6d& toolWrench( ) const { return wrench_.value();}
+  const JacobianMatrix&  toolJacobian( ) const { return jacobian_; }
 
   // SETTER
   Value& q() { return q_.value();  }
@@ -155,8 +159,9 @@ protected:
   eigen_control_toolbox::FilteredValue<N,MaxN> external_effort_;
 
   Eigen::Affine3d Tbt_;
-  Eigen::Vector6d twist_;
-  Eigen::Vector6d twistd_;
+  rosdyn::VectorOfAffine3d Tbl_;
+  rosdyn::VectorOfVector6d twist_;
+  rosdyn::VectorOfVector6d twistd_;
   eigen_control_toolbox::FilteredValue<6> wrench_;
   JacobianMatrix jacobian_;
 

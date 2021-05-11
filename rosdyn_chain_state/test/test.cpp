@@ -302,10 +302,10 @@ TEST(TestSuite, chainGetterX20)
   ASSERT_FALSE(no_throw([]{chainX20->q("foo_the_name_does_not_exist");}));
 
   ASSERT_TRUE(no_throw([]{chainX20->toolPose( ).matrix() ;}));
-  ASSERT_TRUE(no_throw([]{chainX20->twist( ).transpose() ;}));
-  ASSERT_TRUE(no_throw([]{chainX20->twistd( ).transpose();}));
-  ASSERT_TRUE(no_throw([]{chainX20->wrench( ).transpose();}));
-  ASSERT_TRUE(no_throw([]{chainX20->jacobian( )          ;}));
+  ASSERT_TRUE(no_throw([]{chainX20->toolTwist( ).transpose() ;}));
+  ASSERT_TRUE(no_throw([]{chainX20->toolTwistd( ).transpose();}));
+  ASSERT_TRUE(no_throw([]{chainX20->toolWrench( ).transpose();}));
+  ASSERT_TRUE(no_throw([]{chainX20->toolJacobian( )          ;}));
 }
 
 
@@ -340,10 +340,10 @@ TEST(TestSuite, chainGetter6)
 
   ASSERT_FALSE(no_throw([]{chain6->q("foo_the_name_does_not_exist");}));
   ASSERT_TRUE(no_throw([]{chain6->toolPose( ).matrix() ;}));
-  ASSERT_TRUE(no_throw([]{chain6->twist( ).transpose() ;}));
-  ASSERT_TRUE(no_throw([]{chain6->twistd( ).transpose();}));
-  ASSERT_TRUE(no_throw([]{chain6->wrench( ).transpose();}));
-  ASSERT_TRUE(no_throw([]{chain6->jacobian( )          ;}));
+  ASSERT_TRUE(no_throw([]{chain6->toolTwist( ).transpose() ;}));
+  ASSERT_TRUE(no_throw([]{chain6->toolTwistd( ).transpose();}));
+  ASSERT_TRUE(no_throw([]{chain6->toolWrench( ).transpose();}));
+  ASSERT_TRUE(no_throw([]{chain6->toolJacobian( )          ;}));
 }
 
 TEST(TestSuite, handlesX20)
@@ -373,9 +373,9 @@ TEST(TestSuite, jacTest)
   chainX->updateTransformations(kin6, rosdyn::ChainState::SECOND_ORDER|rosdyn::ChainState::FFWD_STATIC);
 
   std::cout << "rosdyn jacobian:\n" << eigen_utils::to_string( jac_rosdyn, false ) << std::endl;
-  std::cout << "chain state jacobian:\n" << eigen_utils::to_string( chainX->jacobian(), false ) << std::endl;
+  std::cout << "chain state jacobian:\n" << eigen_utils::to_string( chainX->toolJacobian(), false ) << std::endl;
 
-  ASSERT_TRUE( (jac_rosdyn-chainX->jacobian()).cwiseAbs().maxCoeff()<1e-4);
+  ASSERT_TRUE( (jac_rosdyn-chainX->toolJacobian()).cwiseAbs().maxCoeff()<1e-4);
 }
 
 

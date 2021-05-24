@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   eigen_matrix_utils
   roscpp
   rosdyn_core
+  realtime_tools
 )
 
 find_package(Eigen3 REQUIRED)
@@ -26,7 +27,7 @@ endif()
 
 catkin_package(
   INCLUDE_DIRS include
-  CATKIN_DEPENDS state_space_filters roscpp rosdyn_core
+  CATKIN_DEPENDS state_space_filters roscpp rosdyn_core realtime_tools
 )
 
 ###########

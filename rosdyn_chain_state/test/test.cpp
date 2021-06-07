@@ -439,6 +439,23 @@ TEST(TestSuite, handlesX20)
   std::cout << "q: " << eigen_utils::to_string( chainX20->q() ) << std::endl;
 }
 
+TEST(TestSuite, fkinTest)
+{
+
+  Eigen::Matrix<double,6,1> tmp;
+  tmp << -1.0761402289019983, -2.00346547762026, -1.6660807768451136, -0.1624382177935999, 0.8131169676780701, 0.1402850896120071;
+  auto tool_rosdyn = kin6->getTransformation(tmp);
+
+  chain->q() = tmp;
+  std::cout << "q: " << eigen_utils::to_string( chain->q() ) << std::endl;
+
+  chain->updateTransformations(kin6, rosdyn::ChainState::SECOND_ORDER|rosdyn::ChainState::FFWD_STATIC);
+
+  std::cout << "rosdyn fkin:\n" << eigen_utils::to_string( tool_rosdyn.matrix(), false ) << std::endl;
+  std::cout << "chain state fkin:\n" << eigen_utils::to_string( chain->toolPose().matrix(), false ) << std::endl;
+  std::cout << "diff:\n" << eigen_utils::to_string( (tool_rosdyn * chain->toolPose().inverse()).matrix(), false ) << std::endl;
+  ASSERT_TRUE( ((tool_rosdyn * chain->toolPose().inverse()).matrix() - Eigen::MatrixXd::Identity(4,4)).cwiseAbs().maxCoeff()<1e-4);
+}
 
 
 TEST(TestSuite, jacTest)

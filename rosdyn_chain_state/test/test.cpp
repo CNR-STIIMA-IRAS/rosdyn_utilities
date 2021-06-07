@@ -120,12 +120,13 @@ using ChainStatePublisher1  = rosdyn::ChainStatePublisherN<1>;
 using ChainStatePublisher3  = rosdyn::ChainStatePublisherN<3>;
 using ChainStatePublisher6  = rosdyn::ChainStatePublisherN<6>;
 
-std::shared_ptr<ChainStateXX>  chainX;
-std::shared_ptr<ChainStateX20> chainX20;
-std::shared_ptr<ChainStateXX>  chainXX;
-std::shared_ptr<ChainState1>   chain1;
-std::shared_ptr<ChainState3>   chain3;
-std::shared_ptr<ChainState6>   chain6;
+std::shared_ptr<rosdyn::ChainState>  chain;
+std::shared_ptr<ChainStateXX>        chainX;
+std::shared_ptr<ChainStateX20>       chainX20;
+std::shared_ptr<ChainStateXX>        chainXX;
+std::shared_ptr<ChainState1>         chain1;
+std::shared_ptr<ChainState3>         chain3;
+std::shared_ptr<ChainState6>         chain6;
 
 std::shared_ptr<ChainStatePublisherX20> chain_pub_X20;
 std::shared_ptr<ChainStatePublisherXX>  chain_pub_XX;
@@ -164,7 +165,8 @@ TEST(TestSuite, chainInit)
 }
 
 TEST(TestSuite, emptyConstructor)
-{
+{ 
+  ASSERT_TRUE(no_throw([]{chain   .reset(new rosdyn::ChainState());}));
   ASSERT_TRUE(no_throw([]{chainX20.reset(new ChainStateX20());}));
   ASSERT_TRUE(no_throw([]{chainXX .reset(new ChainStateXX ());}));
   ASSERT_TRUE(no_throw([]{chainX  .reset(new ChainStateX  ());}));
@@ -175,6 +177,9 @@ TEST(TestSuite, emptyConstructor)
 
 TEST(TestSuite, init)
 {
+  EXPECT_TRUE(chain->init(kin1) );
+  EXPECT_TRUE(chain->init(kin6) );
+
   EXPECT_TRUE(chainX20->init(kin1) );
   EXPECT_TRUE(chainX20->init(kin6) );
 
@@ -193,6 +198,32 @@ TEST(TestSuite, init)
   EXPECT_TRUE(chain6->init(kin6) );
   EXPECT_FALSE(chain6->init(kin1) );
 }
+
+TEST(TestSuite, chainSetter)
+{ //X20 is 6dof
+  ASSERT_TRUE(no_throw([]{eigen_utils::setRandom(chain->q()              );}));
+  ASSERT_TRUE(no_throw([]{eigen_utils::setRandom(chain->qd()             );}));
+  ASSERT_TRUE(no_throw([]{eigen_utils::setRandom(chain->qdd()            );}));
+  ASSERT_TRUE(no_throw([]{eigen_utils::setRandom(chain->effort()         );}));
+  ASSERT_TRUE(no_throw([]{eigen_utils::setRandom(chain->external_effort());}));
+  for(int i=0; i< chain->nAx();i++)
+  {
+    ASSERT_TRUE(no_throw([i]{chain->q(i)               = std::rand() / RAND_MAX;}));
+    ASSERT_TRUE(no_throw([i]{chain->qd(i)              = std::rand() / RAND_MAX;}));
+    ASSERT_TRUE(no_throw([i]{chain->qdd(i)             = std::rand() / RAND_MAX;}));
+    ASSERT_TRUE(no_throw([i]{chain->effort(i)          = std::rand() / RAND_MAX;}));
+    ASSERT_TRUE(no_throw([i]{chain->external_effort(i) = std::rand() / RAND_MAX;}));
+  }
+  for(const auto & n : chain->getJointNames())
+  {
+    ASSERT_TRUE(no_throw([n]{chain->q(n)              = std::rand() / RAND_MAX;}));
+    ASSERT_TRUE(no_throw([n]{chain->qd(n)             = std::rand() / RAND_MAX;}));
+    ASSERT_TRUE(no_throw([n]{chain->qdd(n)            = std::rand() / RAND_MAX;}));
+    ASSERT_TRUE(no_throw([n]{chain->effort(n)         = std::rand() / RAND_MAX;}));
+    ASSERT_TRUE(no_throw([n]{chain->external_effort(n)= std::rand() / RAND_MAX;}));
+  }
+}
+
 
 TEST(TestSuite, chainSetterX20)
 { //X20 is 6dof
@@ -272,6 +303,44 @@ TEST(TestSuite, chainSetter1)
   }
 }
 
+
+TEST(TestSuite, chainGetter)
+{
+  ASSERT_TRUE(no_throw([]{chain->q()              ;}));
+  ASSERT_TRUE(no_throw([]{chain->qd()             ;}));
+  ASSERT_TRUE(no_throw([]{chain->qdd()            ;}));
+  ASSERT_TRUE(no_throw([]{chain->effort()         ;}));
+  ASSERT_TRUE(no_throw([]{chain->external_effort();}));
+
+  for(int i=0; i< chain->nAx();i++)
+  {
+    ASSERT_TRUE(no_throw([i]{chain->q(i)              ;}));
+    ASSERT_TRUE(no_throw([i]{chain->qd(i)             ;}));
+    ASSERT_TRUE(no_throw([i]{chain->qdd(i)            ;}));
+    ASSERT_TRUE(no_throw([i]{chain->effort(i)         ;}));
+    ASSERT_TRUE(no_throw([i]{chain->external_effort(i);}));
+  }
+  ASSERT_FALSE(no_throw([]{chain->q(-1);}));
+  ASSERT_FALSE(no_throw([]{chain->q(1234);}));
+
+  for(const auto & n : chain->getJointNames())
+  {
+    ASSERT_TRUE(no_throw([n]{chain->q(n)              ;}));
+    ASSERT_TRUE(no_throw([n]{chain->qd(n)             ;}));
+    ASSERT_TRUE(no_throw([n]{chain->qdd(n)            ;}));
+    ASSERT_TRUE(no_throw([n]{chain->effort(n)         ;}));
+    ASSERT_TRUE(no_throw([n]{chain->external_effort(n);}));
+  }
+  ASSERT_FALSE(no_throw([]{chain->q("foo_the_name_does_not_exist");}));
+
+  ASSERT_TRUE(no_throw([]{chain->toolPose( ).matrix() ;}));
+  ASSERT_TRUE(no_throw([]{chain->toolTwist( ).transpose() ;}));
+  ASSERT_TRUE(no_throw([]{chain->toolTwistd( ).transpose();}));
+  ASSERT_TRUE(no_throw([]{chain->toolWrench( ).transpose();}));
+  ASSERT_TRUE(no_throw([]{chain->toolJacobian( )          ;}));
+}
+
+
 TEST(TestSuite, chainGetterX20)
 {
   ASSERT_TRUE(no_throw([]{chainX20->q()              ;}));
@@ -346,6 +415,18 @@ TEST(TestSuite, chainGetter6)
   ASSERT_TRUE(no_throw([]{chain6->toolJacobian( )          ;}));
 }
 
+TEST(TestSuite, handles)
+{
+  chain->q() = Eigen::Matrix<double,6,1,Eigen::ColMajor,6,1>().setRandom();
+  std::cout << "q: " << eigen_utils::to_string( chain->q() ) << std::endl;
+
+  double* d = nullptr;
+  ASSERT_TRUE(no_throw([&d]{ d = chain->handle_to_q(); } ));
+
+  d[3] = 100;
+  std::cout << "q: " << eigen_utils::to_string( chain->q() ) << std::endl;
+}
+
 TEST(TestSuite, handlesX20)
 {
   chainX20->q() = Eigen::Matrix<double,6,1,Eigen::ColMajor,6,1>().setRandom();
@@ -359,6 +440,7 @@ TEST(TestSuite, handlesX20)
 }
 
 
+
 TEST(TestSuite, jacTest)
 {
 
@@ -367,15 +449,15 @@ TEST(TestSuite, jacTest)
   auto jac_rosdyn = kin6->getJacobian(tmp);
 
 
-  chainX->q() = tmp;
-  std::cout << "q: " << eigen_utils::to_string( chainX->q() ) << std::endl;
+  chain->q() = tmp;
+  std::cout << "q: " << eigen_utils::to_string( chain->q() ) << std::endl;
 
-  chainX->updateTransformations(kin6, rosdyn::ChainState::SECOND_ORDER|rosdyn::ChainState::FFWD_STATIC);
+  chain->updateTransformations(kin6, rosdyn::ChainState::SECOND_ORDER|rosdyn::ChainState::FFWD_STATIC);
 
   std::cout << "rosdyn jacobian:\n" << eigen_utils::to_string( jac_rosdyn, false ) << std::endl;
-  std::cout << "chain state jacobian:\n" << eigen_utils::to_string( chainX->toolJacobian(), false ) << std::endl;
+  std::cout << "chain state jacobian:\n" << eigen_utils::to_string( chain->toolJacobian(), false ) << std::endl;
 
-  ASSERT_TRUE( (jac_rosdyn-chainX->toolJacobian()).cwiseAbs().maxCoeff()<1e-4);
+  ASSERT_TRUE( (jac_rosdyn-chain->toolJacobian()).cwiseAbs().maxCoeff()<1e-4);
 }
 
 

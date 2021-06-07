@@ -85,7 +85,7 @@ void ChainState::copy(const ChainState& cpy, ChainState::CopyType what)
   ChainStateN<-1,rosdyn::max_num_axes>::CopyType st = 
     what == ChainState::ONLY_JOINT ? ChainStateN<-1,rosdyn::max_num_axes>::ONLY_JOINT :
     what == ChainState::ONLY_CART  ? ChainStateN<-1,rosdyn::max_num_axes>::ONLY_CART  :
-            ChainStateN<-1,rosdyn::max_num_axes>::FULL_STATE;
+    ChainStateN<-1,rosdyn::max_num_axes>::FULL_STATE;
   return impl_.copy(cpy.impl_, st);
 }
 

@@ -204,7 +204,7 @@ template<int N, int MaxN = N>
 std::string to_string(const rosdyn::ChainStateN<N,MaxN>& chain);
 }
 
-#include <rosdyn_chain_state/internal/chain_state_impl.h>
+#include <rosdyn_chain_state/internal/chain_state_n_impl.h>
 
 
 #endif  // ROSDYN_UTILITIES__CHAIN_STATUS_N__H

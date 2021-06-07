@@ -59,7 +59,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
   add_rostest_gtest(${PROJECT_NAME}_test test/test.launch test/test.cpp)
-  target_link_libraries(${PROJECT_NAME}_test ${catkin_LIBRARIES} ${rostest_LIBRARIES} )
+  target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} ${catkin_LIBRARIES} ${rostest_LIBRARIES} )
   target_compile_options(${PROJECT_NAME}_test PUBLIC $<$<CONFIG:Release>:-Ofast -funroll-loops -ffast-math >)
   if(ENABLE_COVERAGE_TESTING)
     set(COVERAGE_EXCLUDES "*/${PROJECT_NAME}/test*")

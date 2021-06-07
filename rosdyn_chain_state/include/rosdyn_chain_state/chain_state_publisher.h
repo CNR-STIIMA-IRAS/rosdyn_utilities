@@ -7,6 +7,7 @@
 #include <sensor_msgs/JointState.h>
 #include <eigen_matrix_utils/overloads.h>
 #include <rosdyn_core/primitives.h>
+#include <rosdyn_chain_state/chain_state_n.h>
 #include <rosdyn_chain_state/chain_state.h>
 
 namespace rosdyn
@@ -68,10 +69,60 @@ using  ChainStatePublisherNPtr = typename ChainStatePublisherN<N,MaxN>::Ptr;
 template<int N, int MaxN = N>
 using  ChainStatePublisherNConstPtr = typename ChainStatePublisherN<N,MaxN>::ConstPtr;
 
+
+
+
 /**
- * @brief ChainState
+ * @brief ChainStatePublisher
  */
-typedef ChainStatePublisherN<-1, rosdyn::max_num_axes> ChainStatePublisher;
+class ChainStatePublisher
+{
+private:
+  ros::NodeHandle nh_;
+  const rosdyn::ChainState* state_;
+  realtime_tools::RealtimePublisher<sensor_msgs::JointState> pub_;
+
+public:
+  typedef std::shared_ptr<ChainStatePublisher> Ptr;
+  typedef std::shared_ptr<ChainStatePublisher const> ConstPtr;
+
+  ChainStatePublisher() = delete;
+  virtual ~ChainStatePublisher() = default;
+  ChainStatePublisher(const ChainStatePublisher& cpy) = delete;
+  ChainStatePublisher(ChainStatePublisher&& cpy) = delete;
+  ChainStatePublisher& operator=(const ChainStatePublisher& cpy) = delete;
+  ChainStatePublisher& operator=(ChainStatePublisher&& cpy) = delete;
+
+  ChainStatePublisher(ros::NodeHandle& nh, const std::string& name,
+                        const rosdyn::Chain& chain, const ChainState* state)
+    : nh_(nh), state_(state)
+  {
+    if(!state_)
+    {
+      throw std::runtime_error("Null pointer iput argument!");
+    }
+    pub_.init(nh_, "/log/" + name, 4);
+    pub_.msg_.name = chain.getActiveJointsName();
+    pub_.msg_.position = std::vector<double>(chain.getActiveJointsNumber(), 0.0);
+    pub_.msg_.velocity = std::vector<double>(chain.getActiveJointsNumber(), 0.0);
+    pub_.msg_.effort   = std::vector<double>(chain.getActiveJointsNumber(), 0.0);
+  }
+
+  void publish()
+  {
+    if(pub_.trylock())
+    {
+      if(state_)
+      {
+        eigen_utils::copy(pub_.msg_.position, state_->q()     );
+        eigen_utils::copy(pub_.msg_.velocity, state_->qd()    );
+        eigen_utils::copy(pub_.msg_.effort  , state_->effort());
+        pub_.msg_.header.stamp = ros::Time::now();
+        pub_.unlockAndPublish();
+      }
+    }
+  }
+};
 typedef ChainStatePublisher::Ptr                       ChainStatePublisherPtr;
 typedef ChainStatePublisher::ConstPtr                  ChainStatePublisherConstPtr;
 

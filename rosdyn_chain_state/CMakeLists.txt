@@ -27,6 +27,7 @@ endif()
 
 catkin_package(
   INCLUDE_DIRS include
+  LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS state_space_filters roscpp rosdyn_core realtime_tools
 )
 
@@ -35,11 +36,10 @@ catkin_package(
 ###########
 
 include_directories(include  ${catkin_INCLUDE_DIRS} ${Eigen3_INCLUDE_DIRS})
-#add_executable(${PROJECT_NAME}_example src/rosdyn_chain_state_node_test.cpp)
-#set_target_properties(${PROJECT_NAME}_example PROPERTIES OUTPUT_NAME node PREFIX "")
-#add_dependencies(${PROJECT_NAME}_example ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-#target_link_libraries(${PROJECT_NAME}_example ${catkin_LIBRARIES} Eigen3::Eigen )
-#target_compile_options(${PROJECT_NAME}_example PUBLIC $<$<CONFIG:Release>:-Ofast -funroll-loops -ffast-math >)
+add_library(${PROJECT_NAME} src/chain_state.cpp)
+add_dependencies(${PROJECT_NAME} ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES} Eigen3::Eigen )
+target_compile_options(${PROJECT_NAME} PUBLIC $<$<CONFIG:Release>:-Ofast -funroll-loops -ffast-math >)
 
 #############
 ## Install ##

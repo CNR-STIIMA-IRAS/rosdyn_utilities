@@ -97,7 +97,7 @@ int ChainState::nAx() const { return impl_.nAx(); }
 namespace std
 {
 
-inline std::string to_string(const rosdyn::ChainState& chain)
+std::string to_string(const rosdyn::ChainState& chain)
 {
   std::string ret;
   ret += "q:     " + eigen_utils::to_string(chain.q())                        + "\n";

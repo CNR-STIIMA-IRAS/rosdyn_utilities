@@ -27,4 +27,4 @@
     uri: https://github.com/CNR-STIIMA-IRAS/subscription_notifier
 - git:
     local-name: test_dependencies/universal_robot
-    uri: https://github.com/ros-industrial/universal_robot
+    uri: https://github.com/fmauch/universal_robot.git

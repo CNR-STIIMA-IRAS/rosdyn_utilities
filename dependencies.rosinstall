@@ -11,3 +11,9 @@
     local-name: rosdyn
     uri: https://github.com/CNR-STIIMA-IRAS/rosdyn
     version: master
+- git:
+    local-name: motion/moveit/moveit_planning_helper
+    uri: https://github.com/CNR-STIIMA-IRAS/moveit_planning_helper
+- git:
+    local-name: code_coverage
+    url: https://github.com/mikeferguson/code_coverage.git

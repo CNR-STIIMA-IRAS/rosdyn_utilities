@@ -10,10 +10,15 @@
 - git:
     local-name: rosdyn
     uri: https://github.com/CNR-STIIMA-IRAS/rosdyn
-    version: master
 - git:
     local-name: motion/moveit/moveit_planning_helper
     uri: https://github.com/CNR-STIIMA-IRAS/moveit_planning_helper
 - git:
     local-name: code_coverage
     url: https://github.com/mikeferguson/code_coverage.git
+- git:
+    local-name: cnr_logger
+    uri: https://github.com/CNR-STIIMA-IRAS/cnr_logger
+- git:
+    local-name: name_sorting
+    uri: https://github.com/CNR-STIIMA-IRAS/name_sorting

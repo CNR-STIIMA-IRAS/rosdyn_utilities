@@ -22,3 +22,7 @@
 - git:
     local-name: name_sorting
     uri: https://github.com/CNR-STIIMA-IRAS/name_sorting
+- git:
+    local-name: subscription_notifier
+    uri: https://github.com/CNR-STIIMA-IRAS/subscription_notifier
+

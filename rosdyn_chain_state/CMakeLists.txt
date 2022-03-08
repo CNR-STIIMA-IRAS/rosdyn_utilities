@@ -68,9 +68,9 @@ if(CATKIN_ENABLE_TESTING)
   target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} ${catkin_LIBRARIES} ${rostest_LIBRARIES} )
   target_compile_options(${PROJECT_NAME}_test PUBLIC $<$<CONFIG:Release>:-Ofast -funroll-loops -ffast-math >)
   if(ENABLE_COVERAGE_TESTING)
-    set(COVERAGE_EXCLUDES "*/${PROJECT_NAME}/test*")
+    set(COVERAGE_EXCLUDES "*/test*")
     add_code_coverage(
-      NAME ${PROJECT_NAME}_coverage_report
+      NAME coverage_report
       DEPENDENCIES ${PROJECT_NAME}_test
     )
   endif()

@@ -28,3 +28,4 @@
 - git:
     local-name: test_dependencies/universal_robot
     uri: https://github.com/fmauch/universal_robot.git
+    version: calibration_devel

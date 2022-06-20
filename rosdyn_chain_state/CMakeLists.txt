@@ -56,11 +56,11 @@ install(TARGETS ${PROJECT_NAME}
 #############
 ## Testing ##
 #############
-
+message(STATUS "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test enabled!")
 ## Add gtest based cpp test target and link libraries
 if(CATKIN_ENABLE_TESTING)
   find_package(rostest REQUIRED)
-  message(STATUS "Test enabled!")
+  message(STATUS "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test enabled!")
   add_rostest_gtest(${PROJECT_NAME}_test test/test.launch test/test.cpp)
   target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} ${catkin_LIBRARIES} ${rostest_LIBRARIES} )
   cnr_target_compile_options(${PROJECT_NAME}_test)

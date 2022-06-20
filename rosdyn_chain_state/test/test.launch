@@ -4,7 +4,7 @@
 <arg name="valgrind" default="false" />
 <arg name="debug" default="false" />
 
-<include file="$(find ur_description)/launch/ur5_upload.launch" />
+<include file="$(find ur_description)/launch/load_ur5.launch" />
 
 <group ns="file_and_screen_different_appenders" >
 <rosparam>

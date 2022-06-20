@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix: # matrix is the product of entries
         ROS_DISTRO: [noetic]
-        ROS_REPO: [main]
+        ROS_REPO: [testing, main]
     env: 
       CCACHE_DIR: "/home/runner/target_ws/.ccache"  #/github/home/.ccache # Directory for ccache (and how we enable ccache in industrial_ci)
       UPSTREAM_WORKSPACE: dependencies.rosinstall
@@ -45,7 +45,6 @@ jobs:
         env: 
           ROS_DISTRO: ${{ matrix.ROS_DISTRO }}
           ROS_REPO: ${{ matrix.ROS_REPO }}
-          CMAKE_ARGS: -DCATKIN_ENABLE_TESTING=ON
       
       - name: code_coverage
         run: './.coverage.sh'

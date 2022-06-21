@@ -4,7 +4,7 @@ declare -a StringArray=("rosdyn_chain_state")
 
 ws=~/target_ws
 
-cp /home/runner/work/cnr_control_toolbox/cnr_control_toolbox/codecov.yml "$ws"/
+cp /home/runner/work/rosdyn_chain_state/rosdyn_chain_state/codecov.yml "$ws"/
 
 cd "$ws"
 

@@ -59,28 +59,27 @@ install(TARGETS ${PROJECT_NAME}
 message(STATUS "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test enabled!")
 ## Add gtest based cpp test target and link libraries
 if(CATKIN_ENABLE_TESTING)
-  find_package(rostest REQUIRED)
-  message(STATUS "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test enabled!")
-  add_rostest_gtest(${PROJECT_NAME}_test test/test.launch test/test.cpp)
-  target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} ${catkin_LIBRARIES} ${rostest_LIBRARIES} )
-  cnr_target_compile_options(${PROJECT_NAME}_test)
-  if(ENABLE_COVERAGE_TESTING)
-    set(COVERAGE_EXCLUDES "*/test*")
-    add_code_coverage(
-      NAME coverage_report
-      DEPENDENCIES ${PROJECT_NAME}_test
+    find_package(rostest REQUIRED)
+    message(STATUS "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Test enabled!")
+    add_rostest_gtest(${PROJECT_NAME}_test test/test.launch test/test.cpp)
+    target_link_libraries(${PROJECT_NAME}_test ${PROJECT_NAME} ${catkin_LIBRARIES} ${rostest_LIBRARIES} )
+    cnr_target_compile_options(${PROJECT_NAME}_test)
+    if(ENABLE_COVERAGE_TESTING)
+      set(COVERAGE_EXCLUDES "*/test*")
+      add_code_coverage(
+        NAME coverage_report
+        DEPENDENCIES ${PROJECT_NAME}_test
+      )
+    endif()
+    
+    install(DIRECTORY test/
+      DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+      PATTERN ".svn" EXCLUDE)
+
+    install(TARGETS ${PROJECT_NAME}_test
+      ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+      LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+      RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
     )
-  endif()
-  ASERTYUIOP
-
-  install(DIRECTORY test/
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-    PATTERN ".svn" EXCLUDE)
-
-  install(TARGETS ${PROJECT_NAME}_test
-    ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-  )
 endif()
 

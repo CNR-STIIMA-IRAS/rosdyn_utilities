@@ -53,11 +53,11 @@ double& ChainState::qdd(const std::string& name) {return impl_.qdd(name); }
 double& ChainState::effort(const std::string& name) {return impl_.effort(name); }
 double& ChainState::external_effort(const std::string& name) {return impl_.external_effort(name); }
 
-eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& ChainState::qFilteredValue() {return impl_.qFilteredValue();}
-eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& ChainState::qdFilteredValue() {return impl_.qdFilteredValue();}
-eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& ChainState::qddFilteredValue() {return impl_.qddFilteredValue();}
-eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& ChainState::effortFilteredValue() {return impl_.effortFilteredValue();}
-eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& ChainState::externalEffortFilteredValue() {return impl_.externalEffortFilteredValue();}
+eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& ChainState::qFilteredValue() {return impl_.qFilteredValue();}
+eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& ChainState::qdFilteredValue() {return impl_.qdFilteredValue();}
+eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& ChainState::qddFilteredValue() {return impl_.qddFilteredValue();}
+eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& ChainState::effortFilteredValue() {return impl_.effortFilteredValue();}
+eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& ChainState::externalEffortFilteredValue() {return impl_.externalEffortFilteredValue();}
 eigen_control_toolbox::FilteredValue<6>&      ChainState::wrenchFilteredValue() {return impl_.wrenchFilteredValue();}
 
 void ChainState::updateTransformations(ChainPtr kin, int ffwd_kin_type) {impl_.updateTransformations(kin, ffwd_kin_type);}
@@ -82,10 +82,10 @@ void ChainState::setZero(Chain& kin) {return impl_.setZero(kin);}
 
 void ChainState::copy(const ChainState& cpy, ChainState::CopyType what)
 {
-  ChainStateN<-1,rosdyn::max_num_axes>::CopyType st = 
-    what == ChainState::ONLY_JOINT ? ChainStateN<-1,rosdyn::max_num_axes>::ONLY_JOINT :
-    what == ChainState::ONLY_CART  ? ChainStateN<-1,rosdyn::max_num_axes>::ONLY_CART  :
-    ChainStateN<-1,rosdyn::max_num_axes>::FULL_STATE;
+  ChainStateN<-1,rdyn::max_num_axes>::CopyType st = 
+    what == ChainState::ONLY_JOINT ? ChainStateN<-1,rdyn::max_num_axes>::ONLY_JOINT :
+    what == ChainState::ONLY_CART  ? ChainStateN<-1,rdyn::max_num_axes>::ONLY_CART  :
+    ChainStateN<-1,rdyn::max_num_axes>::FULL_STATE;
   return impl_.copy(cpy.impl_, st);
 }
 

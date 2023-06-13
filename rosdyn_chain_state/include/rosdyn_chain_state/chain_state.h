@@ -19,15 +19,15 @@ namespace rosdyn
 class ChainState
 {
 private:
-  ChainStateN<-1,rosdyn::max_num_axes> impl_;
+  ChainStateN<-1,rdyn::max_num_axes> impl_;
 public:
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 
   typedef std::shared_ptr<ChainState> Ptr;
   typedef std::shared_ptr<ChainState const> ConstPtr;
 
-  using Value = typename eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>::Value;
-  using JacobianMatrix = Eigen::Matrix<double,6,-1, Eigen::ColMajor,6, rosdyn::max_num_axes>;
+  using Value = typename eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>::Value;
+  using JacobianMatrix = Eigen::Matrix<double,6,-1, Eigen::ColMajor,6, rdyn::max_num_axes>;
 
   // GETTER
   const Value& q() const;
@@ -78,11 +78,11 @@ public:
   double& effort(const std::string& name);
   double& external_effort(const std::string& name);
 
-  eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& qFilteredValue();
-  eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& qdFilteredValue();
-  eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& qddFilteredValue();
-  eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& effortFilteredValue();
-  eigen_control_toolbox::FilteredValue<-1,rosdyn::max_num_axes>& externalEffortFilteredValue();
+  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& qFilteredValue();
+  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& qdFilteredValue();
+  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& qddFilteredValue();
+  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& effortFilteredValue();
+  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& externalEffortFilteredValue();
   eigen_control_toolbox::FilteredValue<6>&      wrenchFilteredValue();
 
   // METHODS

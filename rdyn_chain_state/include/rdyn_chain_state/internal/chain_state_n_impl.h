@@ -1,13 +1,13 @@
 #pragma once
 
-#ifndef ROSDYN_UTILITIES__CHAIN_STATE_IMPL__H
-#define ROSDYN_UTILITIES__CHAIN_STATE_IMPL__H
+#ifndef RDYN_UTILITIES__CHAIN_STATE_IMPL__H
+#define RDYN_UTILITIES__CHAIN_STATE_IMPL__H
 
 #include <Eigen/QR>
 #include <Eigen/SVD>
 #include <sstream>
 #include <eigen_matrix_utils/eigen_matrix_utils.h>
-#include <rosdyn_chain_state/chain_state.h>
+#include <rdyn_chain_state/chain_state.h>
 
 #define SP std::fixed  << std::setprecision(5)
 #define TP(X) std::fixed << std::setprecision(5) << X.format(m_cfrmt)
@@ -32,7 +32,7 @@ PseudoInverseType<MatType> pseudoInverse(const MatType &a, double epsilon = std:
 }
 
 
-namespace rosdyn
+namespace rdyn
 {
 
 template<int N, int MN>
@@ -306,58 +306,7 @@ inline ChainStateN<N,MN>& ChainStateN<N,MN>::updateTransformations(Chain& kin, i
 
 
 
-inline void get_joint_names(ros::NodeHandle& nh, std::vector<std::string>& names)
-{
-  std::vector<std::string> alternative_keys =
-    { "controlled_resources", "controlled_resource",
-      "controlled_joints", "controlled_joint",
-      "joint_names", "joint_name",
-      "joint_resource/joint_names", "joint_resource/joint_name"
-      "joint_resource/controlled_joints", "joint_resource/controlled_joint"
-      "joint_resource/controlled_resources", "joint_resource/controlled_resource"
-      };
-
-  names.clear();
-  for(auto const & key : alternative_keys)
-  {
-    bool ok = false;
-    try
-    {
-      ok = nh.getParam(key, names);
-    }
-    catch(const std::exception& e)
-    {
-      std::cerr <<"Exception in getting '"<< nh.getNamespace() << "/" << key << "': " << e.what() << '\n';
-      ok = false;
-    }
-
-    if(!ok)
-    {
-      try
-      {
-        std::string joint_name;
-        ok = nh.getParam(key, joint_name);
-        if(ok)
-        {
-          names.push_back(joint_name);
-        }
-      }
-      catch(const std::exception& e)
-      {
-        std::cerr <<"Exception in getting '"<< nh.getNamespace() << "/" << key << "': " << e.what() << '\n';
-        ok = false;
-      }
-    }
-
-    if(ok)
-    {
-      break;
-    }
-  }
-  return;
-}
-
-}// rosdyn
+}// rdyn
 
 #undef TP
 #undef SP
@@ -366,7 +315,7 @@ namespace std
 {
 
 template<int N, int MaxN>
-inline std::string to_string(const rosdyn::ChainStateN<N,MaxN>& chain)
+inline std::string to_string(const rdyn::ChainStateN<N,MaxN>& chain)
 {
   std::string ret;
   ret += "q:     " + eu::to_string(chain.q())                        + "\n";
@@ -381,4 +330,4 @@ inline std::string to_string(const rosdyn::ChainStateN<N,MaxN>& chain)
 
 }
 
-#endif  //  ROSDYN_UTILITIES__CHAIN_STATE_IMPL__H
+#endif  //  RDYN_UTILITIES__CHAIN_STATE_IMPL__H

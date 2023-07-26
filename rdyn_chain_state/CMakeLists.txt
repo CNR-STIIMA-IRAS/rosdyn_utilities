@@ -1,13 +1,15 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(rosdyn_chain_state)
+project(rdyn_chain_state)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/cnrConfigMacros.cmake)
 
 cnr_set_flags()
 
 find_package(catkin REQUIRED COMPONENTS
-  rdyn_chain_state
-
+  state_space_filters
+  eigen_matrix_utils
+  rdyn_core
+  realtime_tools
 )
 
 find_package(Eigen3 3.3 REQUIRED)
@@ -22,7 +24,7 @@ endif()
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS rdyn_chain_state
+  CATKIN_DEPENDS state_space_filters rdyn_core realtime_tools
 )
 
 ###########

@@ -2,9 +2,7 @@
 #define ROSDYN_UTILITIES__CHAIN_STATE__H
 
 #include <memory>
-#include <state_space_filters/filtered_values.h>
-#include <rosdyn_core/primitives.h>
-#include <rosdyn_chain_state/chain_state_n.h>
+#include <rdyn_chain_state/chain_state.h>
 
 namespace rosdyn
 {
@@ -16,126 +14,64 @@ namespace rosdyn
  * The class does not own the pointer to ChainInterface, but only a raw pointer is used.
  * This allow the usage also in the stack as stati object.
  */
-class ChainState
+using ChainState = rdyn::ChainState;
+
+
+inline void get_joint_names(ros::NodeHandle& nh, std::vector<std::string>& names)
 {
-private:
-  ChainStateN<-1,rdyn::max_num_axes> impl_;
-public:
-  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+  std::vector<std::string> alternative_keys = { "controlled_resources",
+                                                "controlled_resource",
+                                                "controlled_joints",
+                                                "controlled_joint",
+                                                "joint_names",
+                                                "joint_name",
+                                                "joint_resource/joint_names",
+                                                "joint_resource/joint_name"
+                                                "joint_resource/controlled_joints",
+                                                "joint_resource/controlled_joint"
+                                                "joint_resource/controlled_resources",
+                                                "joint_resource/controlled_resource" };
 
-  typedef std::shared_ptr<ChainState> Ptr;
-  typedef std::shared_ptr<ChainState const> ConstPtr;
-
-  using Value = typename eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>::Value;
-  using JacobianMatrix = Eigen::Matrix<double,6,-1, Eigen::ColMajor,6, rdyn::max_num_axes>;
-
-  // GETTER
-  const Value& q() const;
-  const Value& qd() const;
-  const Value& qdd() const;
-  const Value& effort() const;
-  const Value& external_effort() const;
-
-  double q(const int& iAx) const;
-  double qd(const int& iAx) const;
-  double qdd(const int& iAx) const;
-  double effort(const int& iAx) const;
-  double external_effort(const int& iAx) const;
-
-  double q(const std::string& name) const;
-  double qd(const std::string& name) const;
-  double qdd(const std::string& name) const;
-  double effort(const std::string& name) const;
-  double external_effort(const std::string& name) const;
-
-  const rosdyn::VectorOfAffine3d& linkPose( ) const;
-  const rosdyn::VectorOfVector6d& linkTwist( ) const;
-  const rosdyn::VectorOfVector6d& linkTwistd( ) const;
-  
-  const Eigen::Affine3d& toolPose( ) const;
-  const Eigen::Vector6d& toolTwist( ) const;
-  const Eigen::Vector6d& toolTwistd( ) const;
-  const Eigen::Vector6d& toolWrench( ) const;
-  const JacobianMatrix&  toolJacobian( ) const;
-
-  // SETTER
-  Value& q();
-  Value& qd();
-  Value& qdd();
-  Value& effort();
-  Value& external_effort();
-  Eigen::Vector6d& wrench( );
-
-  double& q(const int& iAx);
-  double& qd(const int& iAx);
-  double& qdd(const int& iAx);
-  double& effort(const int& iAx);
-  double& external_effort(const int& iAx);
-
-  double& q(const std::string& name);
-  double& qd(const std::string& name);
-  double& qdd(const std::string& name);
-  double& effort(const std::string& name);
-  double& external_effort(const std::string& name);
-
-  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& qFilteredValue();
-  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& qdFilteredValue();
-  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& qddFilteredValue();
-  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& effortFilteredValue();
-  eigen_control_toolbox::FilteredValue<-1,rdyn::max_num_axes>& externalEffortFilteredValue();
-  eigen_control_toolbox::FilteredValue<6>&      wrenchFilteredValue();
-
-  // METHODS
-  enum KinematicsType
+  names.clear();
+  for (auto const& key : alternative_keys)
   {
-    ZERO_ORDER   = 0b00000001, // ONLY POSITION FFWD
-    FIRST_ORDER  = 0b00000011, // POS AND VEL FFWD
-    SECOND_ORDER = 0b00000111, // POS, VEL, ACC FFWD
-    FFWD_STATIC  = 0b00001000, // from EFFORT to wrench
-    INV_STATIC   = 0b00010000  // from wrench to effort
-  };
+    bool ok = false;
+    try
+    {
+      ok = nh.getParam(key, names);
+    }
+    catch (const std::exception& e)
+    {
+      std::cerr << "Exception in getting '" << nh.getNamespace() << "/" << key << "': " << e.what() << '\n';
+      ok = false;
+    }
 
-  void updateTransformations(ChainPtr kin, int ffwd_kin_type);
-  void updateTransformations(Chain& kin, int ffwd_kin_type);
+    if (!ok)
+    {
+      try
+      {
+        std::string joint_name;
+        ok = nh.getParam(key, joint_name);
+        if (ok)
+        {
+          names.push_back(joint_name);
+        }
+      }
+      catch (const std::exception& e)
+      {
+        std::cerr << "Exception in getting '" << nh.getNamespace() << "/" << key << "': " << e.what() << '\n';
+        ok = false;
+      }
+    }
 
-  double* handle_to_q(const int& iAx=0);
-  double* handle_to_qd(const int& iAx=0);
-  double* handle_to_qdd(const int& iAx=0);
-  double* handle_to_effort(const int& iAx=0);
-  double* handle_to_external_effort(const int& iAx=0);
-
-  double* handle_to_q(const std::string& name);
-  double* handle_to_qd(const std::string& name);
-  double* handle_to_qdd(const std::string& name);
-  double* handle_to_effort(const std::string& name);
-  double* handle_to_external_effort(const std::string& name);
-
-  ChainState() = default;
-  ChainState(ChainPtr chain);
-  ChainState(Chain&   chain);
-  ChainState(const ChainState& cpy) = delete;
-  ChainState(ChainState&& cpy) = delete;
-  virtual ChainState& operator=(const ChainState& rhs) = delete;
-  virtual ChainState& operator=(ChainState&& rhs) = delete;
-  virtual ~ChainState() = default;
-
-  virtual bool init(ChainPtr kin);
-  virtual bool init(Chain& kin);
-  void setZero(ChainPtr kin);
-  void setZero(Chain& kin);
-
-  enum CopyType { ONLY_JOINT, ONLY_CART, FULL_STATE };
-  void copy(const ChainState& cpy, CopyType what);
-
-  const std::vector<std::string> getJointNames() const;
-  int nAx() const;
-};
-
+    if (ok)
+    {
+      break;
+    }
+  }
+  return;
 }
 
-namespace std
-{
-std::string to_string(const rosdyn::ChainState& chain);
 }
 
 

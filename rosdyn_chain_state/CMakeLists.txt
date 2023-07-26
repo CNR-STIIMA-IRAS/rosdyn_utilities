@@ -7,7 +7,6 @@ cnr_set_flags()
 
 find_package(catkin REQUIRED COMPONENTS
   rdyn_chain_state
-
 )
 
 find_package(Eigen3 3.3 REQUIRED)

@@ -1,5 +1,4 @@
-#ifndef ROSDYN_UTILITIES__CHAIN_STATUS_N__H
-#define ROSDYN_UTILITIES__CHAIN_STATUS_N__H
+#pragma once
 
 #include <rdyn_chain_state/chain_state_n.h>
 
@@ -19,7 +18,7 @@ typedef std::shared_ptr<ChainStateX const> ChainStateXConstPtr;
  * Define the ChainStateN# iwth a pre-defined number of axes
  */
 
-#define RDEFINE_ChainStateN_PTR_STATIC_DIMENSION(nAx)                                                                   \
+#define RDEFINE_ChainStateN_PTR_STATIC_DIMENSION(nAx)                                                                  \
   using ChainState##nAx = ChainStateN<nAx>;                                                                            \
   typedef std::shared_ptr<ChainStateN<nAx> > ChainState##nAx##Ptr;                                                     \
   typedef std::shared_ptr<ChainStateN<nAx> const> ChainState##nAx##ConstPtr;

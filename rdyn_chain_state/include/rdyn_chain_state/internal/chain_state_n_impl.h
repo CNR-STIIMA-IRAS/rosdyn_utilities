@@ -1,13 +1,10 @@
 #pragma once
 
-#ifndef RDYN_UTILITIES__CHAIN_STATE_IMPL__H
-#define RDYN_UTILITIES__CHAIN_STATE_IMPL__H
-
 #include <Eigen/QR>
 #include <Eigen/SVD>
 #include <sstream>
 #include <eigen_matrix_utils/eigen_matrix_utils.h>
-#include <rdyn_chain_state/chain_state.h>
+#include <rdyn_chain_state/chain_state_n.h>
 
 #define SP std::fixed  << std::setprecision(5)
 #define TP(X) std::fixed << std::setprecision(5) << X.format(m_cfrmt)
@@ -330,4 +327,3 @@ inline std::string to_string(const rdyn::ChainStateN<N,MaxN>& chain)
 
 }
 
-#endif  //  RDYN_UTILITIES__CHAIN_STATE_IMPL__H

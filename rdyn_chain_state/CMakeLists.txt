@@ -25,6 +25,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS state_space_filters rdyn_core realtime_tools
+  DEPENDS Eigen3::Eigen
 )
 
 ###########

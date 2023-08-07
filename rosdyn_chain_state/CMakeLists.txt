@@ -22,6 +22,7 @@ catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
   CATKIN_DEPENDS rdyn_chain_state
+  DEPENDS Eigen3
 )
 
 ###########

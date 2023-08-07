@@ -1,5 +1,4 @@
-#ifndef RDYN_UTILITIES__CHAIN_STATUS_N__H
-#define RDYN_UTILITIES__CHAIN_STATUS_N__H
+#pragma once
 
 #include <thread>
 #include <type_traits>

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ROSDYN_UTILITIES__ROSDYN_CHAIN_STATE__CHAIN_STATUS_N__H
+#define ROSDYN_UTILITIES__ROSDYN_CHAIN_STATE__CHAIN_STATUS_N__H
 
 #include <rdyn_chain_state/chain_state_n.h>
 

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RDYN_UTILITIES__RDYN_CHAIN_STATE__CHAIN_STATUS_N__H
+#define RDYN_UTILITIES__RDYN_CHAIN_STATE__CHAIN_STATUS_N__H
 
 #include <thread>
 #include <type_traits>
@@ -202,4 +203,4 @@ std::string to_string(const rdyn::ChainStateN<N,MaxN>& chain);
 #include <rdyn_chain_state/internal/chain_state_n_impl.h>
 
 
-#endif  // RDYN_UTILITIES__CHAIN_STATUS_N__H
+#endif  // RDYN_UTILITIES__RDYN_CHAIN_STATE__CHAIN_STATUS_N__H

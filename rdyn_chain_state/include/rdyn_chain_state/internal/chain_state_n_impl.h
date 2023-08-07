@@ -1,4 +1,5 @@
-#pragma once
+#ifndef RDYN_UTILITIES__RDYN_CHAIN_STATE__IMPL__CHAIN_STATE_N_H
+#define RDYN_UTILITIES__RDYN_CHAIN_STATE__IMPL__CHAIN_STATE_N_H
 
 #include <Eigen/QR>
 #include <Eigen/SVD>
@@ -326,4 +327,4 @@ inline std::string to_string(const rdyn::ChainStateN<N,MaxN>& chain)
 }
 
 }
-
+#endif
